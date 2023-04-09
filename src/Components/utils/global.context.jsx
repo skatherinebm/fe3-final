@@ -1,35 +1,54 @@
-import { useEffect, useState } from "react";
-import { useMemo } from "react";
+import { useContext, useEffect, useReducer} from "react";
 import { createContext } from "react";
 
-export const initialState = { theme: "light", data: [] };
+const getFavoriteDentistsFromLocalStorage = () => {
+  const localData = localStorage.getItem("favoriteDentists");
+  return localData ? JSON.parse(localData) : [];
+}
+const initialState = { theme: "light", data: [], favoriteDentists: getFavoriteDentistsFromLocalStorage() };
 
-export const ContextGlobal = createContext(initialState);
+const ContextGlobal = createContext();
+export const useContextGlobal = ()=> useContext(ContextGlobal)
+
+
+const reducerFunction= (state, action) =>{
+  switch(action.type) {
+    case "changeTheme":
+      return {...state, theme: state.theme === "light" ? "dark" : "light" };
+    case "setData":
+    return {...state, data: action.payload};
+    case "setFavoriteDentists":
+      if (state.favoriteDentists.some(dentist=> dentist === action.payload)) {
+        return {...state};
+      }
+      localStorage.setItem("favoriteDentists", JSON.stringify([...state.favoriteDentists, action.payload]));
+      return {...state, favoriteDentists: [...state.favoriteDentists, action.payload] };
+    default:
+    return state
+  }
+}
 
 export const ContextGlobalProvider = ({ children }) => {
   //Aqui deberan implementar la logica propia del Context, utilizando el hook useMemo
-  const [theme, setTheme] = useState(initialState.theme);
-  const [globalData, setGlobalData] = useState(initialState.data);
 
-  const handleChangeTheme = () => {
-    if (theme === "light") setTheme("dark");
-    if (theme === "dark") setTheme("light");
-  };
+  const [state, dispatch] = useReducer(reducerFunction, {
+    data: initialState.data,
+    theme: initialState.theme,
+    favoriteDentists: initialState.favoriteDentists
+  })
 
   useEffect(() => {
    const traerData = async () => {
       const data = await fetch(`https://jsonplaceholder.typicode.com/users`);
       const json = await data.json();
-      setGlobalData(json);
+      dispatch({type: "setData", payload: json})
     };
     traerData();
   }, []
   );
 
-
-
   return (
-    <ContextGlobal.Provider value={{ theme, globalData, handleChangeTheme}}>
+    <ContextGlobal.Provider value={{ state, dispatch}}>
       {children}
     </ContextGlobal.Provider>
   );

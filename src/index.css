@@ -80,6 +80,11 @@ form{
   border: 0.5px solid rgb(136, 136, 136);
 }
 
+.card img{
+  width: 150px;
+  
+}
+
 .card:hover{
   border: 0.5px solid rgb(206, 217, 142);
 }
@@ -117,6 +122,12 @@ tr:nth-child(even) {
   background-color: #12121296;
   color: white;
 }
+
+.white{
+  background-color: white;
+  color: #12121296;
+}
+
 .dark > a {
   color: white;
 }
