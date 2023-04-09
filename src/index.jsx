@@ -17,7 +17,7 @@ root.render(
         <Routes>
           <Route path="/" element={<App />}>
             <Route path="contact" element={<Contact />} />
-            <Route path="detail" element={<Detail />} />
+            <Route path="detail/:id" element={<Detail />} />
             <Route path="favorites" element={<Favs />} />
             <Route path="home" element={<Home />} />
           </Route>
