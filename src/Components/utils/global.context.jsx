@@ -1,11 +1,22 @@
 import { useContext, useEffect, useReducer} from "react";
 import { createContext } from "react";
 
+const themes = {
+  light: {
+    font: "black",
+    background: "white",
+  },
+  dark: {
+    font: "white",
+    background: "black",
+  },
+}
+
 const getFavoriteDentistsFromLocalStorage = () => {
   const localData = localStorage.getItem("favoriteDentists");
   return localData ? JSON.parse(localData) : [];
 }
-const initialState = { theme: "light", data: [], favoriteDentists: getFavoriteDentistsFromLocalStorage() };
+const initialState = { theme: themes.light, data: [], favoriteDentists: getFavoriteDentistsFromLocalStorage() };
 
 const ContextGlobal = createContext();
 export const useContextGlobal = ()=> useContext(ContextGlobal)
@@ -14,7 +25,7 @@ export const useContextGlobal = ()=> useContext(ContextGlobal)
 const reducerFunction= (state, action) =>{
   switch(action.type) {
     case "changeTheme":
-      return {...state, theme: state.theme === "light" ? "dark" : "light" };
+      return {...state, theme: JSON.stringify(state.theme) === JSON.stringify(themes.light) ? themes.dark : themes.light };
     case "setData":
     return {...state, data: action.payload};
     case "setFavoriteDentists":

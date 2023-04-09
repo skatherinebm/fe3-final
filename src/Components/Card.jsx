@@ -13,7 +13,7 @@ const Card = ({ name, username, id }) => {
 
   return (
     <Link to={`/detail/${id}`}>
-      <div className="card">
+      <div className="card" style={{background: state.theme.background, color: state.theme.font}}>
         {/* En cada card deberan mostrar en name - username y el id */}
 
         {/* No debes olvidar que la Card a su vez servira como Link hacia la pagina de detalle */}
